@@ -21,5 +21,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['prefix' => 'v1'], function () use ($router) {
 
         $router->post('login', 'AuthController@login');
+
+        $router->group(['middleware' => 'auth'], function () use ($router) {
+            $router->post('user', 'UserController@store');
+            $router->put('user/{id}', 'UserController@update');
+            $router->get('users', 'UserController@index');
+        });
     });
 });
