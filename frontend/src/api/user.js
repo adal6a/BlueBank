@@ -1,15 +1,24 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function guardarUsuario(data) {
   return request({
-    url: '/login',
+    url: '/user',
     method: 'post',
     data
   })
 }
 
-export function logout() {
+export function actualizaUsuario(data) {
   return request({
-    url: '/logout'
+    url: '/user/' + data.id,
+    method: 'put',
+    data
   })
 }
+
+export function cargaUsuarios() {
+  return request({
+    url: '/users'
+  })
+}
+
