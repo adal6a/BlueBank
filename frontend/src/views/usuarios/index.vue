@@ -13,7 +13,7 @@
           type="primary"
           @click="nuevoUsuario"
         >
-          Agregar usuarios
+          Agregar usuario
         </el-button>
       </el-col>
     </el-row>
@@ -183,7 +183,7 @@
         <el-button @click="formularioUsuarioVisible = false">Cerrar</el-button>
         <el-button
           type="primary"
-          @click="agregarUsuario"
+          @click="validaFormularioUsuario"
         >Guardar</el-button>
       </span>
     </el-dialog>
@@ -191,7 +191,7 @@
 </template>
 
 <script>
-import { guardarUsuario, cargaUsuarios } from '@/api/user'
+import { guardarUsuario, actualizaUsuario, cargaUsuarios } from '@/api/user'
 
 export default {
   name: 'Index',
@@ -206,6 +206,7 @@ export default {
       usuarios: [],
       cargandoUsuarios: true,
       formularioUsuario: {
+        id: null,
         nombre: '',
         apellido: '',
         identificacion: '',
@@ -215,8 +216,12 @@ export default {
         tipo: 'cliente',
         activo: true
       },
-      formularioErrores: [],
-      reglas: {
+      formularioErrores: []
+    }
+  },
+  computed: {
+    reglas() {
+      return {
         nombre: [
           { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
         ],
@@ -233,18 +238,14 @@ export default {
           { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
         ],
         password: [
-          { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
+          { required: this.formularioUsuario.id === null, message: 'El campo es obligatorio.', trigger: 'change' }
         ]
       }
-    }
-  },
-  computed: {
+    },
     usuariosPaginados() {
-      let usuariosFiltrados = this.usuarios;
-
       this.total = this.usuarios.length
 
-      return usuariosFiltrados.slice(this.tamanioPagina * this.pagina - this.tamanioPagina, this.tamanioPagina * this.pagina)
+      return this.usuarios.slice(this.tamanioPagina * this.pagina - this.tamanioPagina, this.tamanioPagina * this.pagina)
     }
   },
   created() {
@@ -268,10 +269,14 @@ export default {
         this.$refs['formularioUsuario'].clearValidate()
       })
     },
-    agregarUsuario() {
+    validaFormularioUsuario() {
       this.$refs['formularioUsuario'].validate((valid) => {
         if (valid) {
-          this.guardarUsuario()
+          if (this.formularioUsuario.id !== null) {
+            this.actualizaUsuario();
+          } else {
+            this.guardarUsuario();
+          }
         } else {
           return false
         }
@@ -281,7 +286,7 @@ export default {
       guardarUsuario(this.formularioUsuario).then(respuesta => {
         if (respuesta.success) {
           this.usuarios.push(respuesta.data)
-          this.$message.success('Guardado correctamente')
+          this.$message.success(respuesta.message)
           this.formularioUsuarioVisible = false
         } else {
           this.formularioErrores = respuesta.errors
@@ -289,21 +294,36 @@ export default {
       })
     },
     editarUsuario(scopeRow) {
-      this.formularioUsuario.nombre = ''
-      this.formularioUsuario.apellido = ''
-      this.formularioUsuario.identificacion = ''
-      this.formularioUsuario.usuario = ''
-      this.formularioUsuario.correo = ''
-      this.formularioUsuario.password = ''
+      this.formularioUsuario.id = scopeRow.id;
+      this.formularioUsuario.nombre = scopeRow.nombre;
+      this.formularioUsuario.apellido = scopeRow.apellido;
+      this.formularioUsuario.identificacion = scopeRow.identificacion;
+      this.formularioUsuario.usuario = scopeRow.usuario;
+      this.formularioUsuario.correo = scopeRow.correo;
+
       this.formularioUsuarioVisible = true
     },
+    actualizaUsuario() {
+      actualizaUsuario(this.formularioUsuario).then(respuesta => {
+        if (respuesta.success) {
+          const index = this.usuariosPaginados.findIndex(usuario => usuario.id === this.formularioUsuario.id);
+
+          Object.assign(this.usuariosPaginados[index], respuesta.data);
+          this.$message.success(respuesta.message)
+          this.formularioUsuarioVisible = false
+        } else {
+          this.formularioErrores = respuesta.errors
+        }
+      })
+    },
     limpiarFormulario() {
-      this.formularioUsuario.nombre = ''
-      this.formularioUsuario.apellido = ''
-      this.formularioUsuario.identificacion = ''
-      this.formularioUsuario.usuario = ''
-      this.formularioUsuario.correo = ''
-      this.formularioUsuario.password = ''
+      this.formularioUsuario.id = null;
+      this.formularioUsuario.nombre = '';
+      this.formularioUsuario.apellido = '';
+      this.formularioUsuario.identificacion = '';
+      this.formularioUsuario.usuario = '';
+      this.formularioUsuario.correo = '';
+      this.formularioUsuario.password = '';
       this.formularioErrores = []
     }
   }

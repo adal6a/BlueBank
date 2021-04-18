@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Error;
 
 class UserController extends Controller
 {
@@ -39,16 +40,9 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $err = array();
-            foreach ($validator->errors()->toArray() as $error) {
-                foreach ($error as $message) {
-                    array_push($err, $message);
-                }
-            }
-
             return response()->json([
                 'success' => false,
-                'errors' => $err,
+                'errors' => $this->parseaErroresValidacion($validator->errors()),
                 'message'=> 'Errores de validación'
             ]);
         }
@@ -60,28 +54,6 @@ class UserController extends Controller
             'data' => User::create($datosUsuario),
             'message' => 'Usuario guardado correctamente'
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -106,8 +78,8 @@ class UserController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'success' => true,
-                    'errors' => $validator->errors(),
+                    'success' => false,
+                    'errors' => $this->parseaErroresValidacion($validator->errors()),
                     'message'=> 'Errores de validación'
                 ]);
             }
@@ -130,14 +102,16 @@ class UserController extends Controller
         ], 404);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    private function parseaErroresValidacion($errores)
     {
-        //
+        $erroresParseados = array();
+
+        foreach ($errores->toArray() as $error) {
+            foreach ($error as $mensaje) {
+                array_push($erroresParseados, $mensaje);
+            }
+        }
+
+        return $erroresParseados;
     }
 }

@@ -8,6 +8,14 @@ export function guardarUsuario(data) {
   })
 }
 
+export function actualizaUsuario(data) {
+  return request({
+    url: '/user/' + data.id,
+    method: 'put',
+    data
+  })
+}
+
 export function cargaUsuarios() {
   return request({
     url: '/users'
