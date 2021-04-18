@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => User::paginate(5),
+            'data' => User::all(),
             'message' => 'Listado de usuarios consultados correctamente'
         ]);
     }
@@ -39,11 +39,18 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $err = array();
+            foreach ($validator->errors()->toArray() as $error) {
+                foreach ($error as $message) {
+                    array_push($err, $message);
+                }
+            }
+
             return response()->json([
-                'success' => true,
-                'errors' => $validator->errors(),
+                'success' => false,
+                'errors' => $err,
                 'message'=> 'Errores de validación'
-            ], 400);
+            ]);
         }
 
         $datosUsuario['password'] = Hash::make($datosUsuario['password']);
@@ -102,7 +109,7 @@ class UserController extends Controller
                     'success' => true,
                     'errors' => $validator->errors(),
                     'message'=> 'Errores de validación'
-                ], 400);
+                ]);
             }
 
             $datosUsuario['password'] = Hash::make($datosUsuario['password']);

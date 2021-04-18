@@ -1,16 +1,15 @@
 import request from '@/utils/request'
 
-export function guardarUsuario(data) {
+export function login(data) {
   return request({
-    url: '/user',
+    url: '/login',
     method: 'post',
     data
   })
 }
 
-export function cargaUsuarios() {
+export function logout() {
   return request({
-    url: '/users'
+    url: '/logout'
   })
 }
-

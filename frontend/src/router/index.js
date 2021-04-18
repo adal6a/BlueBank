@@ -95,47 +95,22 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  /* {
-    path: '/permission',
+  {
+    path: '/usuarios',
     component: Layout,
-    redirect: '/permission/page',
-    alwaysShow: true, // will always show the root menu
-    name: 'Permission',
-    meta: {
-      title: 'Permission',
-      icon: 'lock',
-      roles: ['empleado', 'editor'] // you can set roles in root nav
-    },
+    redirect: '/usuarios/index',
+    /* meta: {
+      roles: ['empleado'] // or you can only set roles in sub nav
+    },*/
     children: [
       {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'PagePermission',
-        meta: {
-          title: 'Page Permission',
-          roles: ['empleado'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'DirectivePermission',
-        meta: {
-          title: 'Directive Permission'
-          // if do not set roles, means: this page does not require permission
-        }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/permission/role'),
-        name: 'RolePermission',
-        meta: {
-          title: 'Role Permission',
-          roles: ['asd']
-        }
+        path: 'index',
+        component: () => import('@/views/usuarios/index'),
+        name: 'Usuarios',
+        meta: { title: 'Usuarios', icon: 'user', noCache: true }
       }
     ]
-  },*/
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
