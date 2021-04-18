@@ -52,11 +52,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
-  },
-  {
     path: '/404',
     component: () => import('@/views/error-page/404'),
     hidden: true
@@ -100,7 +95,7 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  {
+  /* {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
@@ -109,7 +104,7 @@ export const asyncRoutes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['empleado', 'editor'] // you can set roles in root nav
     },
     children: [
       {
@@ -118,7 +113,7 @@ export const asyncRoutes = [
         name: 'PagePermission',
         meta: {
           title: 'Page Permission',
-          roles: ['admin'] // or you can only set roles in sub nav
+          roles: ['empleado'] // or you can only set roles in sub nav
         }
       },
       {
@@ -136,11 +131,11 @@ export const asyncRoutes = [
         name: 'RolePermission',
         meta: {
           title: 'Role Permission',
-          roles: ['admin']
+          roles: ['asd']
         }
       }
     ]
-  },
+  },*/
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
