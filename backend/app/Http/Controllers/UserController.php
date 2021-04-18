@@ -12,11 +12,14 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return response()->json([
+            'success' => true,
+            'data' => User::paginate(5),
+            'message' => 'Listado de usuarios consultados correctamente'
+        ]);
     }
 
     /**
@@ -104,9 +107,11 @@ class UserController extends Controller
 
             $datosUsuario['password'] = Hash::make($datosUsuario['password']);
 
+            $usuario->update($datosUsuario);
+
             return response()->json([
                 'success' => true,
-                'data' => $usuario->update($datosUsuario),
+                'data' => $usuario,
                 'message' => 'Usuario actualizado correctamente'
             ]);
         }

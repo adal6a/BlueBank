@@ -59,4 +59,22 @@ class UserControllerTest extends TestCase
 
         $response->assertResponseStatus(200);
     }
+
+    public function test_lista_usuarios_paginados()
+    {
+        $usuario = User::factory()->create();
+
+        Passport::actingAs($usuario);
+
+        User::factory()->times(3)->create();
+
+        $response = $this->json('GET', '/api/v1/users');
+
+        $response->seeJson([
+            'success' => true,
+            'message' => 'Listado de usuarios consultados correctamente'
+        ]);
+
+        $response->assertResponseStatus(200);
+    }
 }
