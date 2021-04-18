@@ -30,6 +30,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('users', 'UserController@index');
 
             $router->post('cuenta', 'CuentaController@store');
+            $router->put('cuenta/{id}', 'CuentaController@update');
         });
     });
 });

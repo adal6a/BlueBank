@@ -57,10 +57,43 @@ class CuentaController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $cuenta = Cuenta::find($id);
+
+        if ($cuenta) {
+            $datosCuenta = $request->all();
+
+            $validator = Validator::make($datosCuenta, [
+                'numero' => 'required|unique:users,numero,' . $cuenta->id,
+                'balance' => 'min:0',
+                'user_id' => 'required',
+                'catalogobanco_id' => 'required',
+                'activo' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ErrorValidacion::parseaErroresValidacion($validator->errors()),
+                    'message'=> 'Errores de validación'
+                ]);
+            }
+
+            $cuenta->update($datosCuenta);
+
+            return response()->json([
+                'success' => true,
+                'data' => $cuenta,
+                'message' => 'Cuenta actualizada correctamente'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'data' => null,
+            'message' => 'La cuenta no existe'
+        ], 404);
     }
 }
