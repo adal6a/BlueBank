@@ -20,7 +20,7 @@ class AuthController extends Controller
             if (Hash::check($password, $user->password)) {
                 $token = $user->createToken($user->correo)->accessToken;
 
-                return response([
+                return response()->json([
                     'success' => true,
                     'data' => [
                         'usuario' => $user,
@@ -29,18 +29,18 @@ class AuthController extends Controller
                     'message' => 'Logueado correctamente'
                 ]);
             } else {
-                return response([
+                return response()->json([
                     'success' => false,
                     'data' => null,
                     'message' => 'La contraseña no coincide.'
-                ], 422);
+                ])->setStatusCode(422);
             }
         } else {
-            return response([
+            return response()->json([
                 'success' => false,
                 'data' => null,
                 'message' =>'El usuario no existe.'
-            ], 422);
+            ])->setStatusCode(422);
         }
     }
 }
