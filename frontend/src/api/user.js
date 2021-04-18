@@ -1,24 +1,24 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function guardarUsuario(data) {
   return request({
-    url: '/vue-element-admin/user/login',
+    url: '/user',
     method: 'post',
     data
   })
 }
 
-export function getInfo(token) {
+export function actualizaUsuario(data) {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
+    url: '/user/' + data.id,
+    method: 'put',
+    data
   })
 }
 
-export function logout() {
+export function cargaUsuarios() {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/users'
   })
 }
+

@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 require_once __DIR__.'/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
@@ -23,9 +25,13 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+$app = new \Dusterio\LumenPassport\Lumen7Application(
+    dirname(__DIR__)
+);
 
-// $app->withEloquent();
+$app->withFacades();
+
+$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +67,7 @@ $app->singleton(
 
 $app->configure('app');
 
+$app->configure('auth');
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -76,9 +83,9 @@ $app->configure('app');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +101,11 @@ $app->configure('app');
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
+// Laravel passport services providers
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -111,5 +123,15 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
+
+\Dusterio\LumenPassport\LumenPassport::routes($app);
+
+/*
+|--------------------------------------------------------------------------
+| Configuraciones extra para laravel passport
+|--------------------------------------------------------------------------
+*/
+// Expiracion del token generado = 1 hora
+\Dusterio\LumenPassport\LumenPassport::tokensExpireIn(Carbon::now()->addHour());
 
 return $app;

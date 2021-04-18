@@ -16,6 +16,7 @@ backend/yarn-error.log
 backend/.idea
 backend/.vscode
 backend/storage/
+backend/database/bluebank.sqlite
 
 frontend/.DS_Store
 frontend/node_modules/

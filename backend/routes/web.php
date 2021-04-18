@@ -16,3 +16,18 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->group(['prefix' => 'v1'], function () use ($router) {
+
+        $router->post('login', 'AuthController@login');
+
+        $router->group(['middleware' => 'auth'], function () use ($router) {
+            $router->get('logout', 'AuthController@logout');
+
+            $router->post('user', 'UserController@store');
+            $router->put('user/{id}', 'UserController@update');
+            $router->get('users', 'UserController@index');
+        });
+    });
+});
