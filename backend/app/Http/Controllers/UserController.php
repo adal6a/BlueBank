@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Helpers\ErrorValidacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -42,7 +43,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $this->parseaErroresValidacion($validator->errors()),
+                'errors' => ErrorValidacion::parseaErroresValidacion($validator->errors()),
                 'message'=> 'Errores de validación'
             ]);
         }
@@ -79,7 +80,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
-                    'errors' => $this->parseaErroresValidacion($validator->errors()),
+                    'errors' => ErrorValidacion::parseaErroresValidacion($validator->errors()),
                     'message'=> 'Errores de validación'
                 ]);
             }
@@ -100,18 +101,5 @@ class UserController extends Controller
             'data' => null,
             'message' => 'El usuario no existe'
         ], 404);
-    }
-
-    private function parseaErroresValidacion($errores)
-    {
-        $erroresParseados = array();
-
-        foreach ($errores->toArray() as $error) {
-            foreach ($error as $mensaje) {
-                array_push($erroresParseados, $mensaje);
-            }
-        }
-
-        return $erroresParseados;
     }
 }

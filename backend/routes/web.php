@@ -28,6 +28,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('user', 'UserController@store');
             $router->put('user/{id}', 'UserController@update');
             $router->get('users', 'UserController@index');
+
+            $router->post('cuenta', 'CuentaController@store');
         });
     });
 });
