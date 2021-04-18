@@ -39,4 +39,24 @@ class UserControllerTest extends TestCase
 
         $response->assertResponseStatus(200);
     }
+
+    public function test_actualiza_usuario()
+    {
+        $usuario = User::factory()->create();
+
+        Passport::actingAs($usuario);
+
+        $response = $this->json('PUT', '/api/v1/user/' . $usuario->id, [
+            'nombre' => $usuario->nombre . '-actualizado',
+            'apellido' => $usuario->apellido . '-actualizado',
+            'identificacion' => $usuario->identificacion . '-actualizado',
+            'correo' => $usuario->correo . '-actualizado',
+            'usuario' => $usuario->usuario . '-actualizado',
+            'password' => 'password',
+            'tipo' => 'cliente',
+            'activo' => true,
+        ]);
+
+        $response->assertResponseStatus(200);
+    }
 }

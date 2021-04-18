@@ -30,9 +30,9 @@ class UserController extends Controller
 
         $validator = Validator::make($datosUsuario, [
             'nombre' => 'required',
-            'identificacion' => 'required|unique:users',
-            'usuario' => 'required|unique:users',
-            'correo' => 'required|unique:users',
+            'identificacion' => 'required|unique:users,identificacion',
+            'usuario' => 'required|unique:users,usuario',
+            'correo' => 'required|unique:users,correo',
         ]);
 
         if ($validator->fails()) {
@@ -79,11 +79,43 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $usuario = User::find($id);
+
+        if ($usuario) {
+            $datosUsuario = $request->all();
+
+            $validator = Validator::make($datosUsuario, [
+                'nombre' => 'required',
+                'identificacion' => 'required|unique:users,identificacion,' . $usuario->id,
+                'usuario' => 'required|unique:users,usuario,' . $usuario->id,
+                'correo' => 'required|unique:users,correo,' . $usuario->id,
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => true,
+                    'errors' => $validator->errors(),
+                    'message'=> 'Errores de validación'
+                ], 400);
+            }
+
+            $datosUsuario['password'] = Hash::make($datosUsuario['password']);
+
+            return response()->json([
+                'success' => true,
+                'data' => $usuario->update($datosUsuario),
+                'message' => 'Usuario actualizado correctamente'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'data' => null,
+            'message' => 'El usuario no existe'
+        ], 404);
     }
 
     /**
