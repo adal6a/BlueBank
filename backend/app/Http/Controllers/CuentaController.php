@@ -5,19 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Cuenta;
 use App\Helpers\ErrorValidacion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class CuentaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Consulta las cuentas de un usuario
      *
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
      */
-    public function index()
+    public function cuentasUser(Request $request)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'data' => Cuenta::where('user_id', $request->user_id)->get(),
+            'message' => 'Listado de cuentas consultadas correctamente'
+        ]);
     }
 
     /**

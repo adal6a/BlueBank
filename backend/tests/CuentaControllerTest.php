@@ -15,7 +15,7 @@ class CuentaControllerTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function test_guarda_cuenta()
     {
         $usuario = User::factory()->create();
         Passport::actingAs($usuario);
@@ -37,7 +37,7 @@ class CuentaControllerTest extends TestCase
         $response->assertResponseStatus(200);
     }
 
-    public function test_actualiza_usuario()
+    public function test_actualiza_cuenta()
     {
         $usuario = User::factory()->create();
         Passport::actingAs($usuario);
@@ -55,6 +55,31 @@ class CuentaControllerTest extends TestCase
         $response = $this->json('PUT', '/api/v1/cuenta/' . $cuenta->id, [
             'numero' => $cuenta->numero . 1,
             'balance' => $cuenta->numero . 1,
+        ]);
+
+        $response->assertResponseStatus(200);
+    }
+
+    public function test_lista_cuentas_usuario()
+    {
+        $usuario = User::factory()->create();
+        Passport::actingAs($usuario);
+
+        $cuentaFactory = new CuentaFactory();
+
+        $cuentaFactory->times(3)->create([
+            'numero' => mt_rand(),
+            'balance' => mt_rand(1, 9999),
+            'user_id' => $usuario->id,
+            'catalogobanco_id' => 1,
+            'activo' => true
+        ]);
+
+        $response = $this->json('POST', '/api/v1/cuentas/user');
+
+        $response->seeJson([
+            'success' => true,
+            'message' => 'Listado de cuentas consultadas correctamente'
         ]);
 
         $response->assertResponseStatus(200);
