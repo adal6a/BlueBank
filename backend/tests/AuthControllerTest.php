@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\User;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Laravel\Passport\Passport;
 
 class AuthControllerTest extends TestCase
 {
@@ -17,6 +19,16 @@ class AuthControllerTest extends TestCase
             'usuario' => 'bluebank',
             'password' => 'secret2021'
         ]);
+
+        $response->assertResponseStatus(200);
+    }
+
+    public function test_usuario_cierra_sesion()
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user);
+
+        $response = $this->json('GET', '/api/v1/logout');
 
         $response->assertResponseStatus(200);
     }
