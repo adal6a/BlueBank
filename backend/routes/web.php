@@ -34,6 +34,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('cuentas/user', 'CuentaController@cuentasUser');
 
             $router->post('transaccion/deposito', 'TransaccionController@deposito');
+            $router->post('transaccion/retiro', 'TransaccionController@retiro');
         });
     });
 });
