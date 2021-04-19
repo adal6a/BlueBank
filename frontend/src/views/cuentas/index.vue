@@ -10,6 +10,7 @@
         style="padding-top: 15px"
       >
         <el-button
+          v-if="rol === 'empleado'"
           type="primary"
           @click="nuevaCuenta"
         >
@@ -52,6 +53,7 @@
         >
           <template slot-scope="scope">
             <el-tooltip
+              v-if="rol === 'empleado'"
               class="item"
               effect="dark"
               content="Editar"
@@ -210,7 +212,9 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'cuentas'
+      'cuentas',
+      'user',
+      'rol'
     ]),
     reglas() {
       return {
@@ -226,8 +230,13 @@ export default {
     }
   },
   created() {
-    this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'))
-    this.cargaCuentas()
+    if (this.rol === 'cliente') {
+      this.usuarioCuenta = this.user;
+    } else {
+      this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'));
+    }
+
+    this.cargaCuentas();
   },
   methods: {
     cargaCuentas() {
