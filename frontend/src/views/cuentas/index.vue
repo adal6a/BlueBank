@@ -103,8 +103,8 @@
               prop="balance"
             >
               <el-input
-                type="number"
                 v-model="formularioCuenta.balance"
+                type="number"
               />
             </el-form-item>
           </el-col>
@@ -113,14 +113,14 @@
         <el-row :gutter="24">
           <el-col :span="24">
             <el-switch
+              v-model="formularioCuenta.activo"
               :disabled="formularioCuenta.id === null"
               style="display: block"
-              v-model="formularioCuenta.activo"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="Activa"
-              inactive-text="Inactiva">
-            </el-switch>
+              inactive-text="Inactiva"
+            />
           </el-col>
         </el-row>
       </el-form>
@@ -183,24 +183,24 @@ export default {
     }
   },
   created() {
-    this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'));
+    this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'))
     this.cargaCuentas()
   },
   methods: {
     cargaCuentas() {
-      this.cargandoCuentas = true;
+      this.cargandoCuentas = true
       obtenerCuentas({
         user_id: this.usuarioCuenta.id
       }).then(respuesta => {
-        this.cuentas = respuesta.data;
-        this.cargandoCuentas = false;
+        this.cuentas = respuesta.data
+        this.cargandoCuentas = false
       })
     },
     seleccionaPagina(val) {
       this.pagina = val
     },
     nuevaCuenta() {
-      this.limpiaFormulario();
+      this.limpiaFormulario()
       this.formularioCuentaVisible = true
       this.$nextTick(() => {
         this.$refs['formularioCuenta'].clearValidate()
@@ -209,7 +209,7 @@ export default {
     validaFormularioCuenta() {
       this.$refs['formularioCuenta'].validate((valid) => {
         if (valid) {
-          this.guardando = true;
+          this.guardando = true
           if (this.formularioCuenta.id !== null) {
             this.actualizaCuenta()
           } else {
@@ -223,15 +223,15 @@ export default {
     guardarCuenta() {
       guardarCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          this.cuentas.push(respuesta.data);
-          this.$message.success(respuesta.message);
-          this.formularioCuentaVisible = false;
+          this.cuentas.push(respuesta.data)
+          this.$message.success(respuesta.message)
+          this.formularioCuentaVisible = false
         } else {
           this.formularioErrores = respuesta.errors
         }
 
-        this.guardando = false;
-      });
+        this.guardando = false
+      })
     },
     editarCuenta(scopeRow) {
       this.formularioCuenta = {
@@ -241,7 +241,7 @@ export default {
         user_id: this.usuarioCuenta.id,
         catalogobanco_id: '1',
         activo: scopeRow.activo
-      };
+      }
 
       this.formularioCuentaVisible = true
     },
@@ -252,13 +252,13 @@ export default {
 
           Object.assign(this.cuentasPaginadas[index], respuesta.data)
           this.$message.success(respuesta.message)
-          this.formularioCuentaVisible = false;
+          this.formularioCuentaVisible = false
         } else {
           this.formularioErrores = respuesta.errors
         }
 
-        this.guardando = false;
-      });
+        this.guardando = false
+      })
     },
     limpiaFormulario() {
       this.formularioCuenta = {
@@ -268,9 +268,9 @@ export default {
         user_id: this.usuarioCuenta.id,
         catalogobanco_id: '1',
         activo: true
-      };
+      }
 
-      this.formularioErrores = [];
+      this.formularioErrores = []
     }
   }
 }
