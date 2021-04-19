@@ -32,6 +32,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->post('cuenta', 'CuentaController@store');
             $router->put('cuenta/{id}', 'CuentaController@update');
             $router->post('cuentas/user', 'CuentaController@cuentasUser');
+
+            $router->post('transaccion/deposito', 'TransaccionController@deposito');
         });
     });
 });
