@@ -15,3 +15,11 @@ export function guardarCuenta(data) {
     data
   })
 }
+
+export function actualizaCuenta(data) {
+  return request({
+    url: '/cuenta/' + data.id,
+    method: 'put',
+    data
+  })
+}

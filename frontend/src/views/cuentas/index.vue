@@ -130,6 +130,7 @@
       >
         <el-button @click="formularioCuentaVisible = false">Cerrar</el-button>
         <el-button
+          :loading="guardando"
           type="primary"
           @click="validaFormularioCuenta"
         >Guardar</el-button>
@@ -139,7 +140,7 @@
 </template>
 
 <script>
-import { obtenerCuentas, guardarCuenta } from '@/api/cuenta'
+import { obtenerCuentas, guardarCuenta, actualizaCuenta } from '@/api/cuenta'
 
 export default {
   name: 'Index',
@@ -149,6 +150,8 @@ export default {
       pagina: 1,
       tamanioPagina: 5,
       total: 0,
+
+      guardando: false,
 
       formularioCuentaVisible: false,
       cuentas: [],
@@ -185,10 +188,12 @@ export default {
   },
   methods: {
     cargaCuentas() {
+      this.cargandoCuentas = true;
       obtenerCuentas({
         user_id: this.usuarioCuenta.id
       }).then(respuesta => {
         this.cuentas = respuesta.data;
+        this.cargandoCuentas = false;
       })
     },
     seleccionaPagina(val) {
@@ -204,6 +209,7 @@ export default {
     validaFormularioCuenta() {
       this.$refs['formularioCuenta'].validate((valid) => {
         if (valid) {
+          this.guardando = true;
           if (this.formularioCuenta.id !== null) {
             this.actualizaCuenta()
           } else {
@@ -223,13 +229,36 @@ export default {
         } else {
           this.formularioErrores = respuesta.errors
         }
+
+        this.guardando = false;
       });
     },
     editarCuenta(scopeRow) {
+      this.formularioCuenta = {
+        id: scopeRow.id,
+        numero: scopeRow.numero,
+        balance: scopeRow.balance,
+        user_id: this.usuarioCuenta.id,
+        catalogobanco_id: '1',
+        activo: scopeRow.activo
+      };
+
       this.formularioCuentaVisible = true
     },
     actualizaCuenta() {
+      actualizaCuenta(this.formularioCuenta).then(respuesta => {
+        if (respuesta.success) {
+          const index = this.cuentasPaginadas.findIndex(cuenta => cuenta.id === this.formularioCuenta.id)
 
+          Object.assign(this.cuentasPaginadas[index], respuesta.data)
+          this.$message.success(respuesta.message)
+          this.formularioCuentaVisible = false;
+        } else {
+          this.formularioErrores = respuesta.errors
+        }
+
+        this.guardando = false;
+      });
     },
     limpiaFormulario() {
       this.formularioCuenta = {
