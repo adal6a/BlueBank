@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cuenta;
+use App\Helpers\Cuenta as CuentaHelper;
 use App\Helpers\ErrorValidacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -31,10 +32,11 @@ class CuentaController extends Controller
     public function store(Request $request)
     {
         $datosCuenta = $request->all();
+        $datosCuenta['numero'] = CuentaHelper::generaNumeroCuenta();
 
         $validator = Validator::make($datosCuenta, [
-            'numero' => 'required|integer|unique:cuenta,numero',
-            'balance' => 'min:0',
+            'numero' => 'unique:cuenta,numero',
+            'balance' => 'integer|min:0',
             'user_id' => 'required',
             'catalogobanco_id' => 'required',
             'activo' => 'required'
@@ -70,7 +72,7 @@ class CuentaController extends Controller
 
             $validator = Validator::make($datosCuenta, [
                 'numero' => 'required|unique:users,numero,' . $cuenta->id,
-                'balance' => 'min:0',
+                'balance' => 'integer|min:0',
                 'user_id' => 'required',
                 'catalogobanco_id' => 'required',
                 'activo' => 'required',

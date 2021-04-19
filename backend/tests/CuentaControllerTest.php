@@ -21,7 +21,6 @@ class CuentaControllerTest extends TestCase
         Passport::actingAs($usuario);
 
         $response = $this->json('POST', '/api/v1/cuenta', [
-            'numero' => $numero = mt_rand(),
             'balance' => $balance = mt_rand(1, 9999),
             'user_id' => $usuario->id,
             'catalogobanco_id' => 1,
@@ -29,7 +28,6 @@ class CuentaControllerTest extends TestCase
         ]);
 
         $this->seeInDatabase('cuenta', [
-            'numero' => $numero,
             'balance' => $balance,
             'user_id' => $usuario->id,
         ]);
@@ -53,7 +51,6 @@ class CuentaControllerTest extends TestCase
         ]);
 
         $response = $this->json('PUT', '/api/v1/cuenta/' . $cuenta->id, [
-            'numero' => $cuenta->numero . 1,
             'balance' => $cuenta->numero . 1,
         ]);
 
@@ -67,13 +64,15 @@ class CuentaControllerTest extends TestCase
 
         $cuentaFactory = new CuentaFactory();
 
-        $cuentaFactory->times(3)->create([
-            'numero' => mt_rand(),
-            'balance' => mt_rand(1, 9999),
-            'user_id' => $usuario->id,
-            'catalogobanco_id' => 1,
-            'activo' => true
-        ]);
+        foreach ([1,2,3] as $i) {
+            $cuentaFactory->create([
+                'numero' => mt_rand() + $i,
+                'balance' => mt_rand(1, 9999),
+                'user_id' => $usuario->id,
+                'catalogobanco_id' => 1,
+                'activo' => true
+            ]);
+        }
 
         $response = $this->json('POST', '/api/v1/cuentas/user');
 

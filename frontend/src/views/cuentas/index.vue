@@ -81,8 +81,8 @@
     <el-dialog
       :visible.sync="formularioCuentaVisible"
       top="3vh"
-      width="70%"
-      title="Formulario usuario"
+      width="30%"
+      title="Formulario cuenta de ahorro"
       :close-on-click-modal="false"
     >
       <el-alert v-if="formularioErrores.length > 0" type="error">
@@ -97,15 +97,30 @@
         :rules="reglas"
       >
         <el-row :gutter="24">
-          <el-col :span="8">
+          <el-col :span="24">
             <el-form-item
-              label="Nombre"
-              prop="nombre"
+              label="Balance"
+              prop="balance"
             >
               <el-input
-                v-model="formularioCuenta.numero"
+                type="number"
+                v-model="formularioCuenta.balance"
               />
             </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="24">
+          <el-col :span="24">
+            <el-switch
+              :disabled="formularioCuenta.id === null"
+              style="display: block"
+              v-model="formularioCuenta.activo"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="Activa"
+              inactive-text="Inactiva">
+            </el-switch>
           </el-col>
         </el-row>
       </el-form>
@@ -124,7 +139,7 @@
 </template>
 
 <script>
-import { obtenerCuentas } from '@/api/cuenta'
+import { obtenerCuentas, guardarCuenta } from '@/api/cuenta'
 
 export default {
   name: 'Index',
@@ -153,23 +168,8 @@ export default {
   computed: {
     reglas() {
       return {
-        nombre: [
+        balance: [
           { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
-        ],
-        apellido: [
-          { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
-        ],
-        identificacion: [
-          { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
-        ],
-        usuario: [
-          { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
-        ],
-        correo: [
-          { required: true, message: 'El campo es obligatorio.', trigger: 'change' }
-        ],
-        password: [
-          { required: this.formularioCuenta.id === null, message: 'El campo es obligatorio.', trigger: 'change' }
         ]
       }
     },
@@ -195,7 +195,7 @@ export default {
       this.pagina = val
     },
     nuevaCuenta() {
-      this.$store.dispatch('cuenta/limpiaFormulario')
+      this.limpiaFormulario();
       this.formularioCuentaVisible = true
       this.$nextTick(() => {
         this.$refs['formularioCuenta'].clearValidate()
@@ -205,30 +205,38 @@ export default {
       this.$refs['formularioCuenta'].validate((valid) => {
         if (valid) {
           if (this.formularioCuenta.id !== null) {
-            this.actualizaUsuario()
+            this.actualizaCuenta()
           } else {
-            this.guardarUsuario()
+            this.guardarCuenta()
           }
         } else {
           return false
         }
       })
     },
-    guardarUsuario() {
-
+    guardarCuenta() {
+      guardarCuenta(this.formularioCuenta).then(respuesta => {
+        if (respuesta.success) {
+          this.cuentas.push(respuesta.data);
+          this.$message.success(respuesta.message);
+          this.formularioCuentaVisible = false;
+        } else {
+          this.formularioErrores = respuesta.errors
+        }
+      });
     },
     editarCuenta(scopeRow) {
       this.formularioCuentaVisible = true
     },
-    actualizaUsuario() {
+    actualizaCuenta() {
 
     },
-    limpiaFormulario({ commit }) {
+    limpiaFormulario() {
       this.formularioCuenta = {
         id: null,
         numero: '',
         balance: '',
-        user_id: '',
+        user_id: this.usuarioCuenta.id,
         catalogobanco_id: '1',
         activo: true
       };

@@ -7,3 +7,11 @@ export function obtenerCuentas(data) {
     data
   })
 }
+
+export function guardarCuenta(data) {
+  return request({
+    url: '/cuenta',
+    method: 'post',
+    data
+  })
+}
