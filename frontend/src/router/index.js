@@ -108,6 +108,13 @@ export const asyncRoutes = [
         component: () => import('@/views/usuarios/index'),
         name: 'Usuarios',
         meta: { title: 'Usuarios', icon: 'user', noCache: true }
+      },
+      {
+        path: 'cuentas',
+        component: () => import('@/views/cuentas/index'),
+        name: 'cuentas_usuario',
+        hidden: true,
+        meta: { title: 'Cuentas', activeMenu: '/usuarios/index' }
       }
     ]
   },

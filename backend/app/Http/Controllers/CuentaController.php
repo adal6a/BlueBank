@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Cuenta;
+use App\Helpers\Cuenta as CuentaHelper;
 use App\Helpers\ErrorValidacion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Error;
 
-class UserController extends Controller
+class CuentaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Consulta las cuentas de un usuario
      *
+     * @param  \Illuminate\Http\Request  $request
      */
-    public function index()
+    public function cuentasUser(Request $request)
     {
         return response()->json([
             'success' => true,
-            'data' => User::all(),
-            'message' => 'Listado de usuarios consultados correctamente'
+            'data' => Cuenta::where('user_id', $request->user_id)->get(),
+            'message' => 'Listado de cuentas consultadas correctamente'
         ]);
     }
 
@@ -31,13 +31,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $datosUsuario = $request->all();
+        $datosCuenta = $request->all();
+        $datosCuenta['numero'] = CuentaHelper::generaNumeroCuenta();
 
-        $validator = Validator::make($datosUsuario, [
-            'nombre' => 'required',
-            'identificacion' => 'required|unique:users,identificacion',
-            'usuario' => 'required|unique:users,usuario',
-            'correo' => 'required|unique:users,correo',
+        $validator = Validator::make($datosCuenta, [
+            'numero' => 'unique:cuenta,numero',
+            'balance' => 'integer|min:0',
+            'user_id' => 'required',
+            'catalogobanco_id' => 'required',
+            'activo' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -48,12 +50,10 @@ class UserController extends Controller
             ]);
         }
 
-        $datosUsuario['password'] = Hash::make($datosUsuario['password']);
-
         return response()->json([
             'success' => true,
-            'data' => User::create($datosUsuario),
-            'message' => 'Usuario guardado correctamente'
+            'data' => Cuenta::create($datosCuenta),
+            'message' => 'Cuenta guardada correctamente'
         ]);
     }
 
@@ -65,16 +65,17 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $usuario = User::find($id);
+        $cuenta = Cuenta::find($id);
 
-        if ($usuario) {
-            $datosUsuario = $request->all();
+        if ($cuenta) {
+            $datosCuenta = $request->all();
 
-            $validator = Validator::make($datosUsuario, [
-                'nombre' => 'required',
-                'identificacion' => 'required|unique:users,identificacion,' . $usuario->id,
-                'usuario' => 'required|unique:users,usuario,' . $usuario->id,
-                'correo' => 'required|unique:users,correo,' . $usuario->id,
+            $validator = Validator::make($datosCuenta, [
+                'numero' => 'required|unique:users,numero,' . $cuenta->id,
+                'balance' => 'integer|min:0',
+                'user_id' => 'required',
+                'catalogobanco_id' => 'required',
+                'activo' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -85,21 +86,19 @@ class UserController extends Controller
                 ]);
             }
 
-            $datosUsuario['password'] = Hash::make($datosUsuario['password']);
-
-            $usuario->update($datosUsuario);
+            $cuenta->update($datosCuenta);
 
             return response()->json([
                 'success' => true,
-                'data' => $usuario,
-                'message' => 'Usuario actualizado correctamente'
+                'data' => $cuenta,
+                'message' => 'Cuenta actualizada correctamente'
             ]);
         }
 
         return response()->json([
             'success' => false,
             'data' => null,
-            'message' => 'El usuario no existe'
+            'message' => 'La cuenta no existe'
         ], 404);
     }
 }
