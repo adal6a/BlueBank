@@ -20,7 +20,7 @@
 
     <el-row :gutter="24">
       <el-table
-        v-loading="cargandoUsuarios"
+        v-loading="cargandoCuentas"
         :data="cuentasPaginadas"
         stripe
         style="width: 100%"
@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { obtenerCuentas } from '@/api/cuenta'
 
 export default {
   name: 'Index',
@@ -136,17 +136,21 @@ export default {
       total: 0,
 
       formularioCuentaVisible: false,
-      usuarios: [],
-      cargandoUsuarios: true,
+      cuentas: [],
+      cargandoCuentas: false,
+      usuarioCuenta: null,
+      formularioCuenta: {
+        id: null,
+        numero: '',
+        balance: '',
+        user_id: '',
+        catalogobanco_id: '1',
+        activo: true
+      },
       formularioErrores: []
     }
   },
   computed: {
-    ...mapGetters([
-      'usuarioCuenta',
-      'cuentas',
-      'formularioCuenta'
-    ]),
     reglas() {
       return {
         nombre: [
@@ -176,12 +180,16 @@ export default {
     }
   },
   created() {
+    this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'));
     this.cargaCuentas()
   },
   methods: {
     cargaCuentas() {
-      this.$store.dispatch('cuenta/obtenerCuentas')
-      this.cargandoUsuarios = false
+      obtenerCuentas({
+        user_id: this.usuarioCuenta.id
+      }).then(respuesta => {
+        this.cuentas = respuesta.data;
+      })
     },
     seleccionaPagina(val) {
       this.pagina = val
@@ -214,6 +222,18 @@ export default {
     },
     actualizaUsuario() {
 
+    },
+    limpiaFormulario({ commit }) {
+      this.formularioCuenta = {
+        id: null,
+        numero: '',
+        balance: '',
+        user_id: '',
+        catalogobanco_id: '1',
+        activo: true
+      };
+
+      this.formularioErrores = [];
     }
   }
 }

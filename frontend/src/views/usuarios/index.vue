@@ -328,8 +328,8 @@ export default {
       this.formularioErrores = []
     },
     cuentasUsuario(scopeRow) {
-      // Setea los datos del usuario en la store
-      this.$store.dispatch('cuenta/usuarioCuenta', scopeRow)
+      // Setea los datos del usuario en el localstorage
+      localStorage.setItem('usuarioCuenta', JSON.stringify(scopeRow));
 
       // Redirecciona a la pantalla de las cuentas
       this.$router.push({
