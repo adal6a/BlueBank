@@ -57,6 +57,15 @@ class UserController extends Controller
         ]);
     }
 
+    public function show(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => $request->user(),
+            'message' => 'Detalle del usuario consultado correctamente'
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      *

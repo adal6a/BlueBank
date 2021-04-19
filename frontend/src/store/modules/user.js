@@ -1,16 +1,21 @@
 import { login, logout } from '@/api/auth'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { detalleUsuario } from '@/api/user'
 
 const state = {
   token: getToken(),
   name: '',
   avatar: '',
   introduction: '',
-  rol: null
+  rol: null,
+  user: null
 }
 
 const mutations = {
+  SET_USER: (state, user) => {
+    state.user = user
+  },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
@@ -26,6 +31,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ usuario: usuario.trim(), password: password }).then(response => {
         const data = response.data
+        commit('SET_USER', data.usuario)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
 
@@ -50,6 +56,20 @@ const actions = {
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
 
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  detalleUsuario({ commit }) {
+    return new Promise((resolve, reject) => {
+      detalleUsuario().then(respuesta => {
+        const datos = respuesta.data
+
+        commit('SET_USER', datos)
+        commit('SET_ROL', datos.tipo)
         resolve()
       }).catch(error => {
         reject(error)

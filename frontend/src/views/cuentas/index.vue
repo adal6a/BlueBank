@@ -10,6 +10,7 @@
         style="padding-top: 15px"
       >
         <el-button
+          v-if="rol === 'empleado'"
           type="primary"
           @click="nuevaCuenta"
         >
@@ -31,8 +32,11 @@
         />
         <el-table-column
           label="Balance"
-          prop="balance"
-        />
+        >
+          <template slot-scope="scope">
+            $ {{ scope.row.balance }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="Estado"
         >
@@ -49,6 +53,7 @@
         >
           <template slot-scope="scope">
             <el-tooltip
+              v-if="rol === 'empleado'"
               class="item"
               effect="dark"
               content="Editar"
@@ -59,6 +64,36 @@
                 type="primary"
                 icon="el-icon-edit"
                 @click="editarCuenta(scope.row)"
+              />
+            </el-tooltip>
+
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="Depositar"
+              placement="top"
+            >
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-sold-out"
+                :disabled="!scope.row.activo"
+                @click="depositar(scope.row)"
+              />
+            </el-tooltip>
+
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="Retirar"
+              placement="top"
+            >
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-sell"
+                :disabled="!scope.row.activo"
+                @click="retirar(scope.row)"
               />
             </el-tooltip>
           </template>
@@ -105,6 +140,7 @@
               <el-input
                 v-model="formularioCuenta.balance"
                 type="number"
+                :disabled="formularioCuenta.id !== null"
               />
             </el-form-item>
           </el-col>
@@ -136,14 +172,21 @@
         >Guardar</el-button>
       </span>
     </el-dialog>
+
+    <ModalTransaccion />
   </div>
 </template>
 
 <script>
-import { obtenerCuentas, guardarCuenta, actualizaCuenta } from '@/api/cuenta'
+import { mapGetters } from 'vuex'
 
+import { guardarCuenta, actualizaCuenta } from '@/api/cuenta'
+import ModalTransaccion from '@/views/cuentas/transaccion/index'
 export default {
   name: 'Index',
+  components: {
+    ModalTransaccion
+  },
   data() {
     return {
       search: '',
@@ -154,7 +197,6 @@ export default {
       guardando: false,
 
       formularioCuentaVisible: false,
-      cuentas: [],
       cargandoCuentas: false,
       usuarioCuenta: null,
       formularioCuenta: {
@@ -169,6 +211,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'cuentas',
+      'user',
+      'rol'
+    ]),
     reglas() {
       return {
         balance: [
@@ -183,16 +230,20 @@ export default {
     }
   },
   created() {
-    this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'))
+    if (this.rol === 'cliente') {
+      this.usuarioCuenta = this.user
+    } else {
+      this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'))
+    }
+
     this.cargaCuentas()
   },
   methods: {
     cargaCuentas() {
       this.cargandoCuentas = true
-      obtenerCuentas({
+      this.$store.dispatch('cuenta/obtenerCuentas', {
         user_id: this.usuarioCuenta.id
-      }).then(respuesta => {
-        this.cuentas = respuesta.data
+      }).then(() => {
         this.cargandoCuentas = false
       })
     },
@@ -223,7 +274,8 @@ export default {
     guardarCuenta() {
       guardarCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          this.cuentas.push(respuesta.data)
+          this.$store.dispatch('cuenta/guardaCuenta', respuesta.data)
+
           this.$message.success(respuesta.message)
           this.formularioCuentaVisible = false
         } else {
@@ -248,9 +300,7 @@ export default {
     actualizaCuenta() {
       actualizaCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          const index = this.cuentasPaginadas.findIndex(cuenta => cuenta.id === this.formularioCuenta.id)
-
-          Object.assign(this.cuentasPaginadas[index], respuesta.data)
+          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data)
           this.$message.success(respuesta.message)
           this.formularioCuentaVisible = false
         } else {
@@ -271,6 +321,16 @@ export default {
       }
 
       this.formularioErrores = []
+    },
+    depositar(scopeRow) {
+      this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow)
+      this.$store.dispatch('transaccion/tipoTransaccion', 'deposito')
+      this.$store.dispatch('transaccion/modalTransaccionVisible', true)
+    },
+    retirar(scopeRow) {
+      this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow)
+      this.$store.dispatch('transaccion/tipoTransaccion', 'retiro')
+      this.$store.dispatch('transaccion/modalTransaccionVisible', true)
     }
   }
 }
