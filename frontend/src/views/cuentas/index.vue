@@ -76,6 +76,22 @@
                 type="primary"
                 icon="el-icon-sold-out"
                 @click="depositar(scope.row)"
+                :disabled="!scope.row.activo"
+              />
+            </el-tooltip>
+
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="Retirar"
+              placement="top"
+            >
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-sell"
+                @click="retirar(scope.row)"
+                :disabled="!scope.row.activo"
               />
             </el-tooltip>
           </template>
@@ -122,6 +138,7 @@
               <el-input
                 v-model="formularioCuenta.balance"
                 type="number"
+                :disabled="formularioCuenta.id !== null"
               />
             </el-form-item>
           </el-col>
@@ -299,6 +316,11 @@ export default {
     depositar(scopeRow) {
       this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow)
       this.$store.dispatch('transaccion/tipoTransaccion', 'deposito')
+      this.$store.dispatch('transaccion/modalTransaccionVisible', true)
+    },
+    retirar(scopeRow) {
+      this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow)
+      this.$store.dispatch('transaccion/tipoTransaccion', 'retiro')
       this.$store.dispatch('transaccion/modalTransaccionVisible', true)
     }
   }

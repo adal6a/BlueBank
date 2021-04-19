@@ -6,6 +6,7 @@
     title="Formulario transaccion"
     :close-on-click-modal="false"
   >
+    <h2> Monto actual: $ {{ cuenta.balance }}</h2>
     <el-alert v-if="errores.length > 0" type="error">
       <ul>
         <li v-for="(error, index) in errores" :key="index"><strong> {{ error }} </strong></li>
@@ -101,7 +102,7 @@ export default {
           if (this.tipoTransaccion === 'deposito') {
             this.guardarDeposito()
           } else {
-
+            this.guardarRetiro();
           }
         } else {
           return false
@@ -110,6 +111,21 @@ export default {
     },
     guardarDeposito() {
       guardarDeposito(this.formularioTransaccion).then(respuesta => {
+        if (respuesta.success) {
+          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data.cuenta)
+
+          this.$message.success(respuesta.message)
+
+          this.cerrarModalTransaccion()
+        } else {
+          this.errores = respuesta.errors
+        }
+
+        this.guardando = false
+      })
+    },
+    guardarRetiro() {
+      guardarRetiro(this.formularioTransaccion).then(respuesta => {
         if (respuesta.success) {
           this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data.cuenta)
 
