@@ -77,4 +77,19 @@ class UserControllerTest extends TestCase
 
         $response->assertResponseStatus(200);
     }
+
+    public function test_detalle_usuario()
+    {
+        $usuario = User::factory()->create();
+
+        Passport::actingAs($usuario);
+
+        $response = $this->json('GET', '/api/v1/user');
+
+        $response->seeJson([
+            'success' => true
+        ]);
+
+        $response->assertResponseStatus(200);
+    }
 }

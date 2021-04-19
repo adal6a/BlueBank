@@ -22,3 +22,9 @@ export function cargaUsuarios() {
   })
 }
 
+export function detalleUsuario() {
+  return request({
+    url: '/user',
+    method: 'get'
+  })
+}

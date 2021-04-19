@@ -99,15 +99,38 @@ export const asyncRoutes = [
     path: '/usuarios',
     component: Layout,
     redirect: '/usuarios/index',
-    /* meta: {
-      roles: ['empleado'] // or you can only set roles in sub nav
-    },*/
+    meta: {
+      roles: ['empleado']
+    },
     children: [
       {
         path: 'index',
         component: () => import('@/views/usuarios/index'),
         name: 'Usuarios',
         meta: { title: 'Usuarios', icon: 'user', noCache: true }
+      },
+      {
+        path: 'cuentas',
+        component: () => import('@/views/cuentas/index'),
+        name: 'cuentas_usuario',
+        hidden: true,
+        meta: { title: 'Cuentas', activeMenu: '/usuarios/index' }
+      }
+    ]
+  },
+  {
+    path: '/cuentas',
+    component: Layout,
+    redirect: '/cuentas/index',
+    meta: {
+      roles: ['cliente']
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/cuentas/index'),
+        name: 'Cuentas',
+        meta: { title: 'Cuentas', icon: 'el-icon-s-finance', noCache: true }
       }
     ]
   },

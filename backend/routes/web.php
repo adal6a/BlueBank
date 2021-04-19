@@ -26,8 +26,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('logout', 'AuthController@logout');
 
             $router->post('user', 'UserController@store');
+            $router->get('user', 'UserController@show');
             $router->put('user/{id}', 'UserController@update');
             $router->get('users', 'UserController@index');
+
+            $router->post('cuenta', 'CuentaController@store');
+            $router->put('cuenta/{id}', 'CuentaController@update');
+            $router->post('cuentas/user', 'CuentaController@cuentasUser');
+
+            $router->post('transaccion/deposito', 'TransaccionController@deposito');
+            $router->post('transaccion/retiro', 'TransaccionController@retiro');
         });
     });
 });
