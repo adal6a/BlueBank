@@ -77,8 +77,8 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-sold-out"
-                @click="depositar(scope.row)"
                 :disabled="!scope.row.activo"
+                @click="depositar(scope.row)"
               />
             </el-tooltip>
 
@@ -92,8 +92,8 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-sell"
-                @click="retirar(scope.row)"
                 :disabled="!scope.row.activo"
+                @click="retirar(scope.row)"
               />
             </el-tooltip>
           </template>
@@ -231,12 +231,12 @@ export default {
   },
   created() {
     if (this.rol === 'cliente') {
-      this.usuarioCuenta = this.user;
+      this.usuarioCuenta = this.user
     } else {
-      this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'));
+      this.usuarioCuenta = JSON.parse(localStorage.getItem('usuarioCuenta'))
     }
 
-    this.cargaCuentas();
+    this.cargaCuentas()
   },
   methods: {
     cargaCuentas() {

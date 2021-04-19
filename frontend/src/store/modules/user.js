@@ -66,9 +66,9 @@ const actions = {
   detalleUsuario({ commit }) {
     return new Promise((resolve, reject) => {
       detalleUsuario().then(respuesta => {
-        const datos = respuesta.data;
+        const datos = respuesta.data
 
-        commit('SET_USER', datos);
+        commit('SET_USER', datos)
         commit('SET_ROL', datos.tipo)
         resolve()
       }).catch(error => {
