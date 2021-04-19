@@ -35,22 +35,22 @@
       slot="footer"
       class="dialog-footer"
     >
-        <el-button @click="cerrarModalTransaccion">Cerrar</el-button>
-        <el-button
-          :loading="guardando"
-          type="primary"
-          @click="validaFormularioTransaccion"
-        >Guardar</el-button>
-      </span>
+      <el-button @click="cerrarModalTransaccion">Cerrar</el-button>
+      <el-button
+        :loading="guardando"
+        type="primary"
+        @click="validaFormularioTransaccion"
+      >Guardar</el-button>
+    </span>
   </el-dialog>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 import { guardarDeposito, guardarRetiro } from '@/api/transaccion'
 
 export default {
-  name: "index",
+  name: 'Index',
   data() {
     return {
       errores: [],
@@ -76,21 +76,21 @@ export default {
     ])
   },
   watch: {
-    modalTransaccionVisible: function (visible) {
+    modalTransaccionVisible: function(visible) {
       if (visible) {
-        this.limpiarFormularioTransaccion();
+        this.limpiarFormularioTransaccion()
 
         this.$nextTick(() => {
           this.$refs['formularioTransaccion'].clearValidate()
-        });
+        })
       }
     },
-    tipoTransaccion: function (tipo) {
-      this.formularioTransaccion.tipo = tipo;
+    tipoTransaccion: function(tipo) {
+      this.formularioTransaccion.tipo = tipo
     },
 
-    cuenta: function (cuenta) {
-      this.formularioTransaccion.cuenta_id = cuenta.id;
+    cuenta: function(cuenta) {
+      this.formularioTransaccion.cuenta_id = cuenta.id
     }
   },
   methods: {
@@ -111,17 +111,17 @@ export default {
     guardarDeposito() {
       guardarDeposito(this.formularioTransaccion).then(respuesta => {
         if (respuesta.success) {
-          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data.cuenta);
+          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data.cuenta)
 
           this.$message.success(respuesta.message)
 
-          this.cerrarModalTransaccion();
+          this.cerrarModalTransaccion()
         } else {
           this.errores = respuesta.errors
         }
 
         this.guardando = false
-      });
+      })
     },
     limpiarFormularioTransaccion() {
       this.formularioTransaccion = {
@@ -129,10 +129,10 @@ export default {
         tipo: this.tipoTransaccion,
         monto: '',
         cuenta_id: this.cuenta.id
-      };
+      }
     },
     cerrarModalTransaccion() {
-      this.$store.dispatch('transaccion/modalTransaccionVisible', false);
+      this.$store.dispatch('transaccion/modalTransaccionVisible', false)
     }
   }
 }

@@ -15,9 +15,9 @@ const getters = {
   cuentas: state => state.cuenta.cuentas,
   cuenta: state => state.cuenta.cuenta,
 
-  //Transacciones
+  // Transacciones
   modalTransaccionVisible: state => state.transaccion.modalTransaccionVisible,
-  tipoTransaccion: state => state.transaccion.tipoTransaccion,
+  tipoTransaccion: state => state.transaccion.tipoTransaccion
 }
 
 export default getters

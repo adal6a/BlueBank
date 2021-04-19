@@ -14,7 +14,7 @@ const mutations = {
   },
 
   ADD_CUENTA: (state, cuenta) => {
-    state.cuentas.push(cuenta);
+    state.cuentas.push(cuenta)
   },
 
   UPDATE_CUENTA: (state, cuentaActualizada) => {
@@ -24,7 +24,7 @@ const mutations = {
   },
 
   SET_CUENTA: (state, cuenta) => {
-    state.cuenta = cuenta;
+    state.cuenta = cuenta
   }
 }
 
@@ -32,7 +32,7 @@ const actions = {
   obtenerCuentas({ commit }, datos) {
     return new Promise((resolve, reject) => {
       obtenerCuentas(datos).then(respuesta => {
-        commit('SET_CUENTAS', respuesta.data);
+        commit('SET_CUENTAS', respuesta.data)
         resolve()
       }).catch(error => {
         reject(error)
@@ -41,15 +41,15 @@ const actions = {
   },
 
   guardaCuenta({ commit }, cuenta) {
-    commit('ADD_CUENTA', cuenta);
+    commit('ADD_CUENTA', cuenta)
   },
 
   actualizaCuenta({ commit }, cuentaActualizada) {
-    commit('UPDATE_CUENTA', cuentaActualizada);
+    commit('UPDATE_CUENTA', cuentaActualizada)
   },
 
   seleccionaCuenta({ commit }, cuenta) {
-    commit('SET_CUENTA', cuenta);
+    commit('SET_CUENTA', cuenta)
   }
 }
 

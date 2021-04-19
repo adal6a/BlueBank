@@ -159,10 +159,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 import { guardarCuenta, actualizaCuenta } from '@/api/cuenta'
-import ModalTransaccion from '@/views/cuentas/transaccion/index';
+import ModalTransaccion from '@/views/cuentas/transaccion/index'
 export default {
   name: 'Index',
   components: {
@@ -219,7 +219,7 @@ export default {
         user_id: this.usuarioCuenta.id
       }).then(() => {
         this.cargandoCuentas = false
-      });
+      })
     },
     seleccionaPagina(val) {
       this.pagina = val
@@ -248,7 +248,7 @@ export default {
     guardarCuenta() {
       guardarCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          this.$store.dispatch('cuenta/guardaCuenta', respuesta.data);
+          this.$store.dispatch('cuenta/guardaCuenta', respuesta.data)
 
           this.$message.success(respuesta.message)
           this.formularioCuentaVisible = false
@@ -274,7 +274,7 @@ export default {
     actualizaCuenta() {
       actualizaCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data);
+          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data)
           this.$message.success(respuesta.message)
           this.formularioCuentaVisible = false
         } else {
@@ -297,9 +297,9 @@ export default {
       this.formularioErrores = []
     },
     depositar(scopeRow) {
-      this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow);
-      this.$store.dispatch('transaccion/tipoTransaccion', 'deposito');
-      this.$store.dispatch('transaccion/modalTransaccionVisible', true);
+      this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow)
+      this.$store.dispatch('transaccion/tipoTransaccion', 'deposito')
+      this.$store.dispatch('transaccion/modalTransaccionVisible', true)
     }
   }
 }
