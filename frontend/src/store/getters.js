@@ -1,3 +1,9 @@
+const cuentas = {
+  usuarioCuenta: state => state.cuenta.usuarioCuenta,
+  cuentas: state => state.cuenta.cuentas,
+  formularioCuenta: state => state.cuenta.formularioCuenta
+};
+
 const getters = {
   sidebar: state => state.app.sidebar,
   size: state => state.app.size,
@@ -11,4 +17,7 @@ const getters = {
   rol: state => state.user.rol,
   permission_routes: state => state.permission.routes
 }
+
+Object.assign(getters, cuentas);
+
 export default getters

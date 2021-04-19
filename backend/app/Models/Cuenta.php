@@ -9,4 +9,8 @@ class Cuenta extends Model
     protected $table = 'cuenta';
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'activo' => 'boolean'
+    ];
 }

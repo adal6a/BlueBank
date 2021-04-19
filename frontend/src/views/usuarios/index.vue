@@ -74,6 +74,7 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-s-cooperation"
+                @click="cuentasUsuario(scope.row)"
               />
             </el-tooltip>
           </template>
@@ -325,6 +326,15 @@ export default {
       this.formularioUsuario.correo = '';
       this.formularioUsuario.password = '';
       this.formularioErrores = []
+    },
+    cuentasUsuario(scopeRow) {
+      // Setea los datos del usuario en la store
+      this.$store.dispatch('cuenta/usuarioCuenta', scopeRow);
+
+      //Redirecciona a la pantalla de las cuentas
+      this.$router.push({
+        name: 'cuentas_usuario'
+      });
     }
   }
 }
