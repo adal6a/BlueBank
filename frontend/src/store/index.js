@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
+import transaccion from '@/store/modules/transaccion';
 
 Vue.use(Vuex)
 
@@ -15,7 +16,9 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
   const value = modulesFiles(modulePath)
   modules[moduleName] = value.default
   return modules
-}, {})
+}, {
+  transaccion
+})
 
 const store = new Vuex.Store({
   modules,

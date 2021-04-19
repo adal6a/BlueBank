@@ -31,8 +31,11 @@
         />
         <el-table-column
           label="Balance"
-          prop="balance"
-        />
+        >
+          <template slot-scope="scope">
+            $ {{ scope.row.balance }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="Estado"
         >
@@ -59,6 +62,20 @@
                 type="primary"
                 icon="el-icon-edit"
                 @click="editarCuenta(scope.row)"
+              />
+            </el-tooltip>
+
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="Depositar"
+              placement="top"
+            >
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-sold-out"
+                @click="depositar(scope.row)"
               />
             </el-tooltip>
           </template>
@@ -136,14 +153,21 @@
         >Guardar</el-button>
       </span>
     </el-dialog>
+
+    <ModalTransaccion />
   </div>
 </template>
 
 <script>
-import { obtenerCuentas, guardarCuenta, actualizaCuenta } from '@/api/cuenta'
+import { mapGetters } from 'vuex';
 
+import { guardarCuenta, actualizaCuenta } from '@/api/cuenta'
+import ModalTransaccion from '@/views/cuentas/transaccion/index';
 export default {
   name: 'Index',
+  components: {
+    ModalTransaccion
+  },
   data() {
     return {
       search: '',
@@ -154,7 +178,6 @@ export default {
       guardando: false,
 
       formularioCuentaVisible: false,
-      cuentas: [],
       cargandoCuentas: false,
       usuarioCuenta: null,
       formularioCuenta: {
@@ -169,6 +192,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'cuentas'
+    ]),
     reglas() {
       return {
         balance: [
@@ -189,12 +215,11 @@ export default {
   methods: {
     cargaCuentas() {
       this.cargandoCuentas = true
-      obtenerCuentas({
+      this.$store.dispatch('cuenta/obtenerCuentas', {
         user_id: this.usuarioCuenta.id
-      }).then(respuesta => {
-        this.cuentas = respuesta.data
+      }).then(() => {
         this.cargandoCuentas = false
-      })
+      });
     },
     seleccionaPagina(val) {
       this.pagina = val
@@ -223,7 +248,8 @@ export default {
     guardarCuenta() {
       guardarCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          this.cuentas.push(respuesta.data)
+          this.$store.dispatch('cuenta/guardaCuenta', respuesta.data);
+
           this.$message.success(respuesta.message)
           this.formularioCuentaVisible = false
         } else {
@@ -248,9 +274,7 @@ export default {
     actualizaCuenta() {
       actualizaCuenta(this.formularioCuenta).then(respuesta => {
         if (respuesta.success) {
-          const index = this.cuentasPaginadas.findIndex(cuenta => cuenta.id === this.formularioCuenta.id)
-
-          Object.assign(this.cuentasPaginadas[index], respuesta.data)
+          this.$store.dispatch('cuenta/actualizaCuenta', respuesta.data);
           this.$message.success(respuesta.message)
           this.formularioCuentaVisible = false
         } else {
@@ -271,6 +295,11 @@ export default {
       }
 
       this.formularioErrores = []
+    },
+    depositar(scopeRow) {
+      this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow);
+      this.$store.dispatch('transaccion/tipoTransaccion', 'deposito');
+      this.$store.dispatch('transaccion/modalTransaccionVisible', true);
     }
   }
 }

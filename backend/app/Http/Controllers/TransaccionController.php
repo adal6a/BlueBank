@@ -20,14 +20,17 @@ class TransaccionController extends Controller
             $transaccion = Transaccion::create($datos);
 
             // Realiza la suma a la cuenta principal
-            $this->realizaDepositoEnCuenta(
+            $cuenta = $this->realizaDepositoEnCuenta(
                 $transaccion['cuenta_id'],
                 $transaccion['monto']
             );
 
             return response()->json([
                 'success' => true,
-                'data' => $transaccion,
+                'data' => [
+                    'cuenta' => $cuenta,
+                    'transaccion' => $transaccion
+                ],
                 'message' => 'Depósito realizado correctamente'
             ]);
         } else {
@@ -40,7 +43,7 @@ class TransaccionController extends Controller
         [$validos, $datos] = $this->validaTransaccion($request->all());
         if ($validos) {
             // Realiza la suma a la cuenta principal
-            [$estado, $mensajes] = $this->realizaRetiroEnCuenta(
+            [$estado, $mensajesOCuenta] = $this->realizaRetiroEnCuenta(
                 $datos['cuenta_id'],
                 $datos['monto']
             );
@@ -50,13 +53,16 @@ class TransaccionController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'data' => $transaccion,
+                    'data' => [
+                        'cuenta' => $mensajesOCuenta,
+                        'transaccion' => $transaccion
+                    ],
                     'message' => 'Retiro realizado correctamente'
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'errors' => $mensajes,
+                    'errors' => $mensajesOCuenta,
                     'message'=> 'Errores de validación'
                 ]);
             }
@@ -103,6 +109,8 @@ class TransaccionController extends Controller
 
             $this->realizaTransaccionEnBanco($monto, 'deposito');
         }
+
+        return $cuenta;
     }
 
     private function realizaRetiroEnCuenta($cuenta, $monto)
@@ -128,7 +136,7 @@ class TransaccionController extends Controller
 
                 return [
                     true,
-                    null
+                    $cuenta
                 ];
             }
         }
