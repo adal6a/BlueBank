@@ -274,9 +274,9 @@ export default {
       this.$refs['formularioUsuario'].validate((valid) => {
         if (valid) {
           if (this.formularioUsuario.id !== null) {
-            this.actualizaUsuario();
+            this.actualizaUsuario()
           } else {
-            this.guardarUsuario();
+            this.guardarUsuario()
           }
         } else {
           return false
@@ -295,21 +295,21 @@ export default {
       })
     },
     editarUsuario(scopeRow) {
-      this.formularioUsuario.id = scopeRow.id;
-      this.formularioUsuario.nombre = scopeRow.nombre;
-      this.formularioUsuario.apellido = scopeRow.apellido;
-      this.formularioUsuario.identificacion = scopeRow.identificacion;
-      this.formularioUsuario.usuario = scopeRow.usuario;
-      this.formularioUsuario.correo = scopeRow.correo;
+      this.formularioUsuario.id = scopeRow.id
+      this.formularioUsuario.nombre = scopeRow.nombre
+      this.formularioUsuario.apellido = scopeRow.apellido
+      this.formularioUsuario.identificacion = scopeRow.identificacion
+      this.formularioUsuario.usuario = scopeRow.usuario
+      this.formularioUsuario.correo = scopeRow.correo
 
       this.formularioUsuarioVisible = true
     },
     actualizaUsuario() {
       actualizaUsuario(this.formularioUsuario).then(respuesta => {
         if (respuesta.success) {
-          const index = this.usuariosPaginados.findIndex(usuario => usuario.id === this.formularioUsuario.id);
+          const index = this.usuariosPaginados.findIndex(usuario => usuario.id === this.formularioUsuario.id)
 
-          Object.assign(this.usuariosPaginados[index], respuesta.data);
+          Object.assign(this.usuariosPaginados[index], respuesta.data)
           this.$message.success(respuesta.message)
           this.formularioUsuarioVisible = false
         } else {
@@ -318,23 +318,23 @@ export default {
       })
     },
     limpiarFormulario() {
-      this.formularioUsuario.id = null;
-      this.formularioUsuario.nombre = '';
-      this.formularioUsuario.apellido = '';
-      this.formularioUsuario.identificacion = '';
-      this.formularioUsuario.usuario = '';
-      this.formularioUsuario.correo = '';
-      this.formularioUsuario.password = '';
+      this.formularioUsuario.id = null
+      this.formularioUsuario.nombre = ''
+      this.formularioUsuario.apellido = ''
+      this.formularioUsuario.identificacion = ''
+      this.formularioUsuario.usuario = ''
+      this.formularioUsuario.correo = ''
+      this.formularioUsuario.password = ''
       this.formularioErrores = []
     },
     cuentasUsuario(scopeRow) {
       // Setea los datos del usuario en la store
-      this.$store.dispatch('cuenta/usuarioCuenta', scopeRow);
+      this.$store.dispatch('cuenta/usuarioCuenta', scopeRow)
 
-      //Redirecciona a la pantalla de las cuentas
+      // Redirecciona a la pantalla de las cuentas
       this.$router.push({
         name: 'cuentas_usuario'
-      });
+      })
     }
   }
 }

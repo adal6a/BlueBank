@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Index',
@@ -180,14 +180,14 @@ export default {
   },
   methods: {
     cargaCuentas() {
-      this.$store.dispatch('cuenta/obtenerCuentas');
+      this.$store.dispatch('cuenta/obtenerCuentas')
       this.cargandoUsuarios = false
     },
     seleccionaPagina(val) {
       this.pagina = val
     },
     nuevaCuenta() {
-      this.$store.dispatch('cuenta/limpiaFormulario');
+      this.$store.dispatch('cuenta/limpiaFormulario')
       this.formularioCuentaVisible = true
       this.$nextTick(() => {
         this.$refs['formularioCuenta'].clearValidate()
@@ -197,9 +197,9 @@ export default {
       this.$refs['formularioCuenta'].validate((valid) => {
         if (valid) {
           if (this.formularioCuenta.id !== null) {
-            this.actualizaUsuario();
+            this.actualizaUsuario()
           } else {
-            this.guardarUsuario();
+            this.guardarUsuario()
           }
         } else {
           return false
