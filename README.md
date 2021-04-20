@@ -237,6 +237,11 @@ Utilicé TDD para el desarrollo usando el patrón de diseño por defecto propues
   Cerrar la sesión después de X tiempo debido a un tema de seguridad
   y permitir solo una sesión a la vez
 
+- **Transferencias**  
+  Me hubiese gustado agregarle la funcionalidad de trasferencia de dinero entre las
+  cuentas pero ya no me dio chance, de hecho la base de datos quedo preparada para
+  eso
+
 ## Diagrama ER Base de datos BlueBank
 ![Base de datos](https://i.ibb.co/VCsDzB5/Blue-Bank-BD.png)
 
