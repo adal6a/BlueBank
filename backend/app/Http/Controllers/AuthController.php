@@ -27,21 +27,21 @@ class AuthController extends Controller
                         'usuario' => $user,
                         'token' => $token,
                     ],
-                    'message' => 'Logueado correctamente'
+                    'message' => 'Sesión iniciada correctamente'
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
                     'data' => null,
-                    'message' => 'La contraseña no coincide.'
-                ], 422);
+                    'message' => 'La contraseña no coincide'
+                ]);
             }
         } else {
             return response()->json([
                 'success' => false,
                 'data' => null,
-                'message' =>'El usuario no existe.'
-            ], 422);
+                'message' =>'El usuario no existe'
+            ]);
         }
     }
 
