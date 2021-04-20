@@ -102,7 +102,7 @@ export default {
           if (this.tipoTransaccion === 'deposito') {
             this.guardarDeposito()
           } else {
-            this.guardarRetiro();
+            this.guardarRetiro()
           }
         } else {
           return false
