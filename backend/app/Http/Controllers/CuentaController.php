@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cuenta;
 use App\Helpers\Cuenta as CuentaHelper;
 use App\Helpers\ErrorValidacion;
+use App\Models\Transaccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -100,5 +101,14 @@ class CuentaController extends Controller
             'data' => null,
             'message' => 'La cuenta no existe'
         ], 404);
+    }
+
+    public function transacciones(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => Transaccion::where('cuenta_id', $request->cuenta_id)->orderBy('fecha_hora', 'desc')->get(),
+            'message' => 'Listado de transacciones consultadas correctamente'
+        ]);
     }
 }
