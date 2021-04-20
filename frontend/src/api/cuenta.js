@@ -23,3 +23,11 @@ export function actualizaCuenta(data) {
     data
   })
 }
+
+export function transaccionesCuenta(data) {
+  return request({
+    url: '/cuenta/transacciones',
+    method: 'post',
+    data
+  })
+}

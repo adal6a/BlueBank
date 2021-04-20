@@ -3,7 +3,7 @@
     :visible="modalTransaccionVisible"
     top="3vh"
     width="30%"
-    title="Formulario transaccion"
+    title="Formulario transacción"
     :close-on-click-modal="false"
   >
     <h2> Monto actual: $ {{ cuenta.balance }}</h2>

@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Transaccion;
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Factories\CuentaFactory;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -79,6 +81,40 @@ class CuentaControllerTest extends TestCase
         $response->seeJson([
             'success' => true,
             'message' => 'Listado de cuentas consultadas correctamente'
+        ]);
+
+        $response->assertResponseStatus(200);
+    }
+
+    public function test_usuario_lista_transacciones_de_una_cuenta()
+    {
+        $usuario = User::factory()->create();
+        Passport::actingAs($usuario);
+
+        $cuentaFactory = new CuentaFactory();
+
+        $cuenta = $cuentaFactory->create([
+            'numero' => mt_rand(),
+            'balance' => mt_rand(1, 9999),
+            'user_id' => $usuario->id,
+            'catalogobanco_id' => 1,
+            'activo' => true
+        ]);
+
+        Transaccion::factory()->create([
+            'tipo' => 'deposito',
+            'monto' => mt_rand(),
+            'fecha_hora' => Carbon::now(),
+            'cuenta_id' => $cuenta->id
+        ]);
+
+        $response = $this->json('POST', '/api/v1/cuenta/transacciones', [
+            'cuenta_id' => $cuenta->id
+        ]);
+
+        $response->seeJson([
+            'success' => true,
+            'message' => 'Listado de transacciones consultadas correctamente'
         ]);
 
         $response->assertResponseStatus(200);
