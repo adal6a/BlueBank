@@ -70,8 +70,8 @@ export default {
   data() {
     return {
       loginForm: {
-        usuario: 'bluebank',
-        password: 'secret2021'
+        usuario: '',
+        password: ''
       },
       loginRules: {
         usuario: [
