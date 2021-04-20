@@ -70,8 +70,8 @@ export default {
   data() {
     return {
       loginForm: {
-        usuario: 'bluebank',
-        password: 'secret2021'
+        usuario: '',
+        password: ''
       },
       loginRules: {
         usuario: [
@@ -128,8 +128,13 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+            .then(respuesta => {
+              if (respuesta.success) {
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+                this.$message.success(respuesta.message)
+              } else {
+                this.$message.error(respuesta.message)
+              }
               this.loading = false
             })
             .catch(() => {

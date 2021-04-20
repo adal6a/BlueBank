@@ -49,7 +49,7 @@
         <el-table-column
           label="Acciones"
           align="center"
-          width="200"
+          width="300"
         >
           <template slot-scope="scope">
             <el-tooltip
@@ -94,6 +94,21 @@
                 icon="el-icon-sell"
                 :disabled="!scope.row.activo"
                 @click="retirar(scope.row)"
+              />
+            </el-tooltip>
+
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="Transacciones"
+              placement="top"
+            >
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-s-data"
+                :loading="cargandoTransacciones"
+                @click="verTransacciones(scope.row)"
               />
             </el-tooltip>
           </template>
@@ -173,6 +188,24 @@
       </span>
     </el-dialog>
 
+    <el-dialog title="Transacciones" :visible.sync="modalTransaccionesVisible">
+      <el-table :data="transacciones" size="mini">
+        <el-table-column property="monto" :label="'$ Monto'" />
+        <el-table-column label="Fecha y hora">
+          <template slot-scope="scope">
+            {{ formateaFecha(scope.row.fecha_hora) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Tipo">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.tipo === 'deposito' ? 'success' : ''">
+              {{ scope.row.tipo === 'deposito' ? 'Depósito' : 'Retiro' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <ModalTransaccion />
   </div>
 </template>
@@ -180,7 +213,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import { guardarCuenta, actualizaCuenta } from '@/api/cuenta'
+import { guardarCuenta, actualizaCuenta, transaccionesCuenta } from '@/api/cuenta'
 import ModalTransaccion from '@/views/cuentas/transaccion/index'
 export default {
   name: 'Index',
@@ -207,7 +240,11 @@ export default {
         catalogobanco_id: '1',
         activo: true
       },
-      formularioErrores: []
+      formularioErrores: [],
+
+      modalTransaccionesVisible: false,
+      cargandoTransacciones: false,
+      transacciones: []
     }
   },
   computed: {
@@ -331,6 +368,31 @@ export default {
       this.$store.dispatch('cuenta/seleccionaCuenta', scopeRow)
       this.$store.dispatch('transaccion/tipoTransaccion', 'retiro')
       this.$store.dispatch('transaccion/modalTransaccionVisible', true)
+    },
+    verTransacciones(scopeRow) {
+      this.cargandoTransacciones = true
+
+      transaccionesCuenta({
+        cuenta_id: scopeRow.id
+      }).then(respuesta => {
+        this.transacciones = respuesta.data
+
+        this.cargandoTransacciones = false
+        this.modalTransaccionesVisible = true
+      })
+    },
+    formateaFecha(fechaHora) {
+      const fechaHoraJs = new Date(fechaHora)
+
+      const fecha = fechaHoraJs.toLocaleString('es-MX', {
+        day: 'numeric',
+        year: 'numeric',
+        month: 'numeric'
+      })
+
+      const hora = fechaHoraJs.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+      return `${fecha} ${hora}`
     }
   }
 }
